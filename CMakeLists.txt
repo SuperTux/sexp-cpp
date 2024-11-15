@@ -18,6 +18,9 @@ cmake_minimum_required(VERSION 3.0)
 project(sexp)
 
 include(mk/cmake/TinyCMMC.cmake)
+include(mk/cmake/CPM.cmake)
+
+include(mk/cmake/Check-from_chars.cmake)
 
 include(GNUInstallDirs)
 include(MaximumWarnings)
@@ -30,6 +33,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(GLOB SEXP_SOURCES src/*.cpp)
 file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp STATIC ${SEXP_SOURCES})
+
+IF(NOT FROM_CHARS_WORKS)
+    CPMFindPackage(NAME fast_float
+                   GIT_REPOSITORY https://github.com/fastfloat/fast_float
+                   VERSION 6.1.0
+                   EXCLUDE_FROM_ALL yes)
+    GET_TARGET_PROPERTY(fast_float_INCLUDE_DIRECTORIES
+                        FastFloat::fast_float INTERFACE_INCLUDE_DIRECTORIES)
+    TARGET_INCLUDE_DIRECTORIES(sexp 
+      PRIVATE ${fast_float_INCLUDE_DIRECTORIES}
+      INTERFACE ${fast_float_INCLUDE_DIRECTORIES})
+    TARGET_COMPILE_OPTIONS(sexp 
+      PRIVATE -DUSE_FAST_FLOAT
+      INTERFACE -DUSE_FAST_FLOAT)
+ENDIF()
+
 set_target_properties(sexp PROPERTIES PUBLIC_HEADER "${SEXP_HEADER_SOURCES}")
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
 target_include_directories(sexp SYSTEM PUBLIC

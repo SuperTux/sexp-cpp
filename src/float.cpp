@@ -18,7 +18,15 @@
 #include "float.hpp"
 
 #include <cassert>
-#include <charconv>
+#if USE_FAST_FLOAT
+# include <fast_float/fast_float.h>
+using fast_float::from_chars;
+using fast_float::from_chars_result;
+#else
+# include <charconv>
+using std::from_chars;
+using std::from_chars_result;
+#endif
 #include <limits>
 #include <sstream>
 
@@ -34,18 +42,31 @@ float string2float(const std::string& text)
   }
 
   float result;
-  [[maybe_unused]] auto err = std::from_chars(start, text.data() + text.size(), result);
+  [[maybe_unused]] auto err = from_chars(start, text.data() + text.size(), result);
   assert(err.ec == std::errc());
   return result;
 }
 
 void float2string(std::ostream& os, float value)
 {
-  constexpr size_t len = 32;
+#ifdef SEXP_USE_CXX17
+  constexpr size_t len = std::numeric_limits<float>::digits10 + 1;
   char buffer[len];
   auto result = std::to_chars(buffer, buffer + len, value);
   assert(result.ec == std::errc());
   os.write(buffer, result.ptr - buffer);
+#else
+  auto precision = os.precision(std::numeric_limits<float>::digits10 + 1);
+#  ifdef SEXP_USE_LOCALE
+  const auto& loc = os.getloc();
+  os.imbue(std::locale::classic());
+  os << value;
+  os.imbue(loc);
+#  else
+  os << value;
+#  endif
+  os.precision(precision);
+#endif
 }
 
 } // namespace sexp
