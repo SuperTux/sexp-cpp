@@ -80,6 +80,4 @@ if(BUILD_BENCHMARKS)
   endforeach()
 endif()
 
-include(ExportAndInstallLibrary)
-
 # EOF #
