@@ -18,8 +18,6 @@ cmake_minimum_required(VERSION 3.0)
 project(sexp)
 
 include(GNUInstallDirs)
-include(MaximumWarnings)
-include(ClangTidy)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
