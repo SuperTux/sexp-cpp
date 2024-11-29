@@ -17,8 +17,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(sexp)
 
-include(mk/cmake/TinyCMMC.cmake)
-
 include(GNUInstallDirs)
 include(MaximumWarnings)
 include(ClangTidy)
