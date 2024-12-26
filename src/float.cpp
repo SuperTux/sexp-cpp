@@ -26,17 +26,7 @@ namespace sexp {
 
 float string2float(const std::string& text)
 {
-  char const* start = text.data();
-
-  // A leading + (e.g. "+5") is not accepted by from_chars(), so skip it
-  if (!text.empty() && text[0] == '+') {
-    start += 1;
-  }
-
-  float result;
-  [[maybe_unused]] auto err = std::from_chars(start, text.data() + text.size(), result);
-  assert(err.ec == std::errc());
-  return result;
+  return std::stof(text);
 }
 
 void float2string(std::ostream& os, float value)
