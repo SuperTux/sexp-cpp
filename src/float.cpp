@@ -26,7 +26,12 @@ namespace sexp {
 
 float string2float(const std::string& text)
 {
-  return std::stof(text);
+  std::istringstream iss(text);
+  iss.imbue(std::locale::classic());
+  float result;
+  iss >> result;
+  assert(!iss.eof());
+  return result;
 }
 
 void float2string(std::ostream& os, float value)
