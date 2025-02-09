@@ -36,7 +36,7 @@ float string2float(const std::string& text)
 
 void float2string(std::ostream& os, float value)
 {
-  std::ostringstream oss();
+  std::ostringstream oss;
   oss.imbue(std::locale::classic());
   oss << value;
   os << oss.str();
