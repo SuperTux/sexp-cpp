@@ -28,6 +28,7 @@ file(GLOB SEXP_HEADER_SOURCES include/sexp/*.hpp)
 add_library(sexp STATIC ${SEXP_SOURCES})
 set_target_properties(sexp PROPERTIES PUBLIC_HEADER "${SEXP_HEADER_SOURCES}")
 target_compile_options(sexp PRIVATE ${WARNINGS_CXX_FLAGS})
+target_compile_features(sexp PUBLIC cxx_std_17)
 target_include_directories(sexp SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
