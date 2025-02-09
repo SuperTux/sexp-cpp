@@ -36,11 +36,10 @@ float string2float(const std::string& text)
 
 void float2string(std::ostream& os, float value)
 {
-  constexpr size_t len = 32;
-  char buffer[len];
-  auto result = std::to_chars(buffer, buffer + len, value);
-  assert(result.ec == std::errc());
-  os.write(buffer, result.ptr - buffer);
+  std::ostringstream oss();
+  oss.imbue(std::locale::classic());
+  oss << value;
+  os << oss.str();
 }
 
 } // namespace sexp
