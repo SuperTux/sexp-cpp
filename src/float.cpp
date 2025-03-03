@@ -30,7 +30,6 @@ float string2float(const std::string& text)
   iss.imbue(std::locale::classic());
   float result;
   iss >> result;
-  assert(!iss.eof());
   return result;
 }
 
