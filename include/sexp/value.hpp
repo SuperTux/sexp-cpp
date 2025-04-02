@@ -204,6 +204,7 @@ public:
   inline bool is_integer() const { return m_type == Type::INTEGER; }
   inline bool is_real() const { return (m_type == Type::REAL || m_type == Type::INTEGER); }
   inline bool is_string() const { return m_type == Type::STRING; }
+  inline bool is_translatable_string() const;
   inline bool is_symbol() const { return m_type == Type::SYMBOL; }
   inline bool is_cons() const { return m_type == Type::CONS; }
   inline bool is_array() const { return m_type == Type::ARRAY; }
@@ -341,6 +342,19 @@ Value::operator==(Value const& rhs) const
   {
     return false;
   }
+}
+
+inline bool
+Value::is_translatable_string() const
+{
+  if (m_type != Type::ARRAY)
+    return false;
+
+  const std::vector<Value>& array = *m_data.m_array;
+  return array.size() == 2 &&
+         array[0].is_symbol() &&
+         array[0].as_string() == "_" &&
+         array[1].is_string();
 }
 
 inline Value const&

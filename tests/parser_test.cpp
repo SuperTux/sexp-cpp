@@ -150,6 +150,23 @@ TEST(ParserTest, parse_symbol)
   }
 }
 
+TEST(ParserTest, parse_cons)
+{
+  char const* sx_str = "(1 \"foo\" (bar))";
+  auto sx = sexp::Parser::from_string(sx_str, false);
+  ASSERT_TRUE(sx.is_cons());
+  ASSERT_EQ(sexp::Value::Type::CONS, sx.get_type());
+  ASSERT_EQ(sx_str, sx.str());
+}
+
+TEST(ParserTest, parse_cons_depth_limit)
+{
+  auto sx = sexp::Parser::from_string("(1 \"foo\" (bar foo (foo 1) 2 (\"bar\" . 4)))", false, 1);
+  ASSERT_TRUE(sx.is_cons());
+  ASSERT_EQ(sexp::Value::Type::CONS, sx.get_type());
+  ASSERT_EQ("(1 \"foo\" (bar foo 2))", sx.str());
+}
+
 TEST(ParserTest, parse_array)
 {
   char const* sx_str = "#(1 \"foo\" #(bar))";
@@ -157,6 +174,14 @@ TEST(ParserTest, parse_array)
   ASSERT_TRUE(sx.is_array());
   ASSERT_EQ(sexp::Value::Type::ARRAY, sx.get_type());
   ASSERT_EQ(sx_str, sx.str());
+}
+
+TEST(ParserTest, parse_array_depth_limit)
+{
+  auto sx = sexp::Parser::from_string("#(1 \"foo\" #(bar foo #(foo 1) 2 #(\"bar\" 4)))", false, 1);
+  ASSERT_TRUE(sx.is_array());
+  ASSERT_EQ(sexp::Value::Type::ARRAY, sx.get_type());
+  ASSERT_EQ("#(1 \"foo\" #(bar foo 2))", sx.str());
 }
 
 // FIXME: Compare data structure or use simple strings?!

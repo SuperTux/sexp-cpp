@@ -33,14 +33,14 @@ class Parser
 public:
   enum { USE_ARRAYS = true };
 
-  static Value from_string(std::string const& str, bool use_arrays = false);
-  static Value from_stream(std::istream& stream, bool use_arrays = false);
+  static Value from_string(std::string const& str, bool use_arrays = false, int depth = -1);
+  static Value from_stream(std::istream& stream, bool use_arrays = false, int depth = -1);
 
-  static std::vector<Value> from_string_many(std::string const& str, bool use_arrays =  false);
-  static std::vector<Value> from_stream_many(std::istream& stream, bool use_arrays = false);
+  static std::vector<Value> from_string_many(std::string const& str, bool use_arrays = false, int depth = -1);
+  static std::vector<Value> from_stream_many(std::istream& stream, bool use_arrays = false, int depth = -1);
 
 public:
-  Parser(Lexer& lexer);
+  Parser(Lexer& lexer, int depth = -1);
   ~Parser();
 
 private:
@@ -51,7 +51,10 @@ private:
 
 private:
   Lexer& m_lexer;
+  const int m_depth;
+
   Lexer::TokenType m_token;
+  int m_current_depth;
 
 private:
   Parser(const Parser&);
